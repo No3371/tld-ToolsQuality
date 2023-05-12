@@ -47,4 +47,44 @@ Limb chopping: 4-5x
 Branch/Bush chopping: 1.5-2x
 Small trees: no change (for now)
 
+#### Mod API
 
+The mod provides an API for mods to add items to one of the following classes:
+- Improvised
+- Manufatured
+- Hacksaw
+- Extraordinary: A new class for tools that are designed to be superior and will be too op with `Manufactured` settings applied.
+
+There are 2 ways to use the API.
+
+##### Method 1
+The first way is reference ToolsQuality and call the methods directly:
+- `ToolsQuality.ToolsQualityAPI.AddImproviseds (string[] gearItemNames)`
+- `ToolsQuality.ToolsQualityAPI.AddManufactureds (string[] gearItemNames)`
+- `ToolsQuality.ToolsQualityAPI.AddExtraordinarys (string[] gearItemNames)`
+- `ToolsQuality.ToolsQualityAPI.AddHacksaws (string[] gearItemNames)`
+
+This makes your mod depend on ToolsQuality.
+
+
+##### Method 2
+
+The second way does not force dependency:
+
+```csharp
+void RegisterToolsQuality (params string[] gearItemNames)
+{
+    Type type = Type.GetType("ToolsQuality.ToolsQualityAPI, ToolsQuality");
+    if (type == null)
+        return;
+    var m = type.GetMethod("AddImproviseds"); // or AddManufactureds, AddExtraordinarys, AddHacksaws
+    if (m == null)
+    {
+        MelonLogger.Warning("ToolsQuality endpoint not found.");
+        return;
+    }
+    m.Invoke(null, new object[] { gearItemNames });
+}
+```
+
+Copy this method to your mod, and change the `AddImproviseds` to the class you want, then you can call it with the gear item names you want to register.

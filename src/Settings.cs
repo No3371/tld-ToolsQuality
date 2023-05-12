@@ -92,6 +92,32 @@ namespace ToolsQuality
 		[Description("Above (inclusive) this condition, tool will not have penalty")]
 		[Slider(0, 100, 101)]
 		public int ImpHighQpct = 100;
+
+		[Section("Extraordinary tools")]
+		[Name("Low Quality condition point")]
+		[Description("Below (inclusive) this condition tool will be performing with multiplier of next value.")]
+		[Slider(0, 100, 101)]
+		public int ExtLowQpct = 10;
+
+		[Name("Low Quality time multiplier")]
+		[Description("Time multiplier for bad condition - recommended 2-3")]
+		[Slider(1f, 10f)]
+		public float ExtLowQTime = 1.5f;
+
+		[Name("High Quality condition point")]
+		[Description("Above (inclusive) this condition, tool will not have penalty")]
+		[Slider(0, 100, 101)]
+		public int ExtHighQpct = 50;
+
+		[Name("Boost Quality condition point")]
+		[Description("Above this point, tool will have efficiency bonus, used with next value. Set to 100 to disable.")]
+		[Slider(0, 100, 101)]
+		public int ExtBoostQpct = 100;
+
+		[Name("Boost Quality time multiplier")]
+		[Description("Time multiplier for perfect condition - recommended 0.7 (if used)")]
+		[Slider(0.1f, 1f)]
+		public float ExtBoostQTime = 0.95f;
 		protected override void OnChange(FieldInfo field, object oldValue, object newValue)
 		{
 			RefreshFields();
@@ -111,6 +137,10 @@ namespace ToolsQuality
 			{
 				ImpHighQpct = ImpLowQpct;
 			}
+			if (ExtHighQpct < ExtLowQpct)
+			{
+				ExtHighQpct = ExtLowQpct;
+			}
 			if (ToolsQualityEnabled)
             {
 				SetFieldVisible(nameof(ManLowQpct), true);
@@ -121,6 +151,9 @@ namespace ToolsQuality
 				SetFieldVisible(nameof(ImpLowQpct), true);
 				SetFieldVisible(nameof(ImpLowQTime), true);
 				SetFieldVisible(nameof(ImpHighQpct), true);
+				SetFieldVisible(nameof(ExtLowQpct), true);
+				SetFieldVisible(nameof(ExtLowQTime), true);
+				SetFieldVisible(nameof(ExtHighQpct), true);
 			}
 			else
             {
@@ -132,6 +165,9 @@ namespace ToolsQuality
 				SetFieldVisible(nameof(ImpLowQpct), false);
 				SetFieldVisible(nameof(ImpLowQTime), false);
 				SetFieldVisible(nameof(ImpHighQpct), false);
+				SetFieldVisible(nameof(ExtLowQpct), false);
+				SetFieldVisible(nameof(ExtLowQTime), false);
+				SetFieldVisible(nameof(ExtHighQpct), false);
 			}
 			RefreshGUI();
 		}
