@@ -72,15 +72,30 @@ This makes your mod depend on ToolsQuality.
 The second way does not force dependency:
 
 ```csharp
-void RegisterToolsQuality (params string[] gearItemNames)
+enum ToolQualityType
+{
+	Improvised,
+	Manufactured,
+	Extraordinary,
+	Hacksaw
+}
+
+void RegisterToolsQuality (ToolQualityType quality, params string[] gearItemNames)
 {
     Type type = Type.GetType("ToolsQuality.ToolsQualityAPI, ToolsQuality");
     if (type == null)
         return;
-    var m = type.GetMethod("AddImproviseds"); // or AddManufactureds, AddExtraordinarys, AddHacksaws
+	
+    var m = quality switch {
+		ToolQualityType.Improvised => type.GetMethod("AddImproviseds"),
+		ToolQualityType.Manufactured => type.GetMethod("AddManufactureds"),
+		ToolQualityType.Extraordinary => type.GetMethod("AddExtraordinarys"),
+		ToolQualityType.Hacksaw => type.GetMethod("AddHacksaws"),
+		_ => null
+	};  // or AddManufactureds, AddExtraordinarys, AddHacksaws
     if (m == null)
     {
-        MelonLogger.Warning("ToolsQuality endpoint not found.");
+        MelonLogger.Warning("ToolsQuality endpoint not found for quality" + quality);
         return;
     }
     m.Invoke(null, new object[] { gearItemNames });
@@ -90,5 +105,6 @@ void RegisterToolsQuality (params string[] gearItemNames)
 Copy this method to your mod, and change the `AddImproviseds` to the class you want, then you can call it with the gear item names you want to register:
 
 ```csharp
-RegisterToolsQuality("GEAR_knifes", "GEAR_knifej");
+RegisterToolsQuality(ToolQualityType.Improvised, "GEAR_knifes");
+RegisterToolsQuality(ToolQualityType.Extraordinary, "GEAR_knifej");
 ```
