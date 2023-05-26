@@ -102,7 +102,7 @@ void RegisterToolsQuality (ToolQualityType quality, params string[] gearItemName
 }
 ```
 
-Copy this method to your mod, and change the `AddImproviseds` to the class you want, then you can call it with the gear item names you want to register:
+Copy this method to your mod, then you can call it with the gear item names you want to register:
 
 ```csharp
 RegisterToolsQuality(ToolQualityType.Improvised, "GEAR_knifes");
